@@ -1,0 +1,112 @@
+# Discord Bot 運用マニュアル
+
+## 1. 初期セットアップ
+1. 必要なファイルの転送：
+# main.pyの転送
+scp -i "c:\Users\YComoro\Desktop\discord bot\ssh-key-2025-09-27.key" "c:\Users\YComoro\Desktop\discord bot\main.py" ubuntu@140.238.55.177:~/
+
+# .envファイルの転送
+scp -i "c:\Users\YComoro\Desktop\discord bot\ssh-key-2025-09-27.key" "c:\Users\YComoro\Desktop\discord bot\.env" ubuntu@140.238.55.177:~/
+
+# YouTubeクッキーファイルの転送（音声機能に必要）
+scp -i "c:\Users\YComoro\Desktop\discord bot\ssh-key-2025-09-27.key" "c:\Users\YComoro\Desktop\discord bot\youtube.com_cookies.txt" ubuntu@140.238.55.177:~/
+
+2. 必要なパッケージのインストール：
+pip3 install google-api-python-client yt-dlp discord.py python-dotenv
+
+3. FFmpegのインストール：
+sudo apt-get update
+sudo apt-get install ffmpeg -y
+
+## 2. サーバーへの接続方法
+ssh -i "c:\Users\YComoro\Desktop\discord bot\ssh-key-2025-09-27.key" ubuntu@140.238.55.177
+
+## 2. ボットの起動
+1. screenセッションの作成と起動：
+screen -S discord_bot
+python3 main.py
+
+2. screenセッションからデタッチ（バックグラウンド実行）：
+- Ctrl + A を押した後、D を押す
+- これでボットはバックグラウンドで動作し続けます
+
+## 3. ボットの状態確認
+# 実行中のscreenセッション一覧を表示
+screen -ls
+
+# 期待される出力例：
+# There is a screen on:
+#        xxxxx.discord_bot    (Detached)
+
+## 4. 実行中のボットに接続（モニタリング）
+# 実行中のセッションに再接続
+screen -r discord_bot
+
+## 5. ボットの停止方法
+1. screenセッションに接続：
+screen -r discord_bot
+
+2. ボットの停止：
+- Ctrl + C でプログラムを停止
+- exit でscreenセッションを終了
+
+または、直接セッションを終了：
+screen -X -S discord_bot quit
+
+## 6. ボットの再起動
+# 新しいscreenセッションを作成
+screen -S discord_bot
+
+# ボットを起動
+python3 main.py
+
+# デタッチするには Ctrl + A, D
+
+## 7. トラブルシューティング
+
+■screenセッションが複数ある場合
+# 全てのセッションを確認
+screen -ls
+
+# 特定のセッションを終了
+screen -X -S [セッション名] quit
+
+# 全てのセッションを終了
+pkill screen
+
+■ボットがオフラインの場合
+1. セッションの状態を確認
+screen -ls
+
+2. ログを確認
+screen -r discord_bot  # セッションに接続してエラーメッセージを確認
+
+■音声機能が動作しない場合
+# FFmpegが正しくインストールされているか確認
+ffmpeg -version
+
+# 必要に応じてFFmpegを再インストール
+sudo apt-get update
+sudo apt-get install ffmpeg -y
+
+## 8. 定期的なメンテナンス
+# パッケージの更新
+pip3 install --upgrade discord.py yt-dlp google-api-python-client python-dotenv
+
+# システムの更新
+sudo apt update
+sudo apt upgrade -y
+
+## 9. 重要な注意事項
+- サーバーを再起動した場合、ボットは自動的には起動しません
+- .envファイルの内容が正しいことを確認してください
+- ボットのトークンは厳重に管理してください
+- 定期的にログを確認して、エラーがないか確認することをお勧めします
+
+## 10. ボットのコマンド一覧
+!play [URL または 検索ワード] - 音楽を再生
+!loop - ループ再生のオン/オフを切り替え
+!stop - 音楽の再生を停止
+!leave - ボイスチャンネルから退出
+
+このマニュアルは基本的な操作をカバーしています。新しい機能を追加した場合は、適宜更新してください。

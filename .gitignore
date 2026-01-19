@@ -1,0 +1,46 @@
+# キーとクレデンシャル
+*.key
+*.key.pub
+AIzaSyClunQgrS7tyR9YM-RT7IEZ3pntNz8ZDSs.txt
+bot key
+cookies.txt
+youtube.com_cookies.txt
+元youtube.com_cookies.txt
+
+# 大きなバイナリファイル
+ffmpeg/
+新しいフォルダー/
+*.mp4
+*.exe
+*.7z
+
+# Node.js
+node_modules/
+.env
+.env.local
+package-lock.json
+yarn.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# その他
+tmp/
+*.log
