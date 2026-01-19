@@ -24,6 +24,9 @@ else:
     ffmpeg_system = shutil.which("ffmpeg")
     FFMPEG_PATH = ffmpeg_system if ffmpeg_system else "ffmpeg"
 
+# クッキーファイルパスの設定
+COOKIES_FILE = os.path.join(BASE_DIR, "youtube.com_cookies.txt")
+
 # Bot 初期化
 intents = discord.Intents.default()
 intents.message_content = True
@@ -37,21 +40,26 @@ class MusicPlayer:
 
 music_player = MusicPlayer()
 
-# yt_dlp のオプション（クッキーなし版）
-ydl_opts = {
-    'format': 'bestaudio/best',
-    'quiet': True,
-    'noplaylist': True,
-    'http_chunk_size': 10485760,
-    'fragment_retries': 10,
-    'retries': 10,
-    'extract_flat': True,
-    'force_generic_extractor': False,
-    'postprocessors': [{
-        'key': 'FFmpegExtractAudio',
-        'preferredcodec': 'opus',
-    }]
-}
+# yt_dlp のオプション（クッキー使用版）
+def get_ydl_opts():
+    opts = {
+        'format': 'bestaudio/best',
+        'quiet': False,
+        'noplaylist': True,
+        'http_chunk_size': 10485760,
+        'fragment_retries': 10,
+        'retries': 10,
+        'extract_flat': True,
+        'force_generic_extractor': False,
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'opus',
+        }]
+    }
+    # クッキーファイルが存在する場合はそれを使用
+    if os.path.exists(COOKIES_FILE):
+        opts['cookiefile'] = COOKIES_FILE
+    return opts
 
 # YouTube URL かどうか判定
 def is_youtube_url(text: str) -> bool:
@@ -109,7 +117,7 @@ async def play(ctx, *, search: str):
 
     # yt-dlp で音声情報取得
     try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        with yt_dlp.YoutubeDL(get_ydl_opts()) as ydl:
             info = ydl.extract_info(url, download=False)
             audio_url = info['url']
     except Exception as e:
