@@ -49,8 +49,16 @@ def get_ydl_opts():
         'http_chunk_size': 10485760,
         'fragment_retries': 10,
         'retries': 10,
-        'extract_flat': True,
-        'force_generic_extractor': False,
+        'socket_timeout': 30,
+        'http_headers': {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        },
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['web', 'android'],
+                'skip': ['hls', 'dash']
+            }
+        },
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'opus',
