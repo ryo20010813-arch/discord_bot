@@ -40,32 +40,23 @@ class MusicPlayer:
 
 music_player = MusicPlayer()
 
-# yt_dlp のオプション（クッキー使用版）
+# yt_dlp のオプション（シンプル版 - クッキーなし）
 def get_ydl_opts():
     opts = {
-        'format': 'bestaudio[ext=m4a]/bestaudio/best',
+        'format': 'bestaudio/best',
         'quiet': False,
         'noplaylist': True,
-        'http_chunk_size': 10485760,
-        'fragment_retries': 10,
-        'retries': 10,
         'socket_timeout': 30,
-        'skip_unavailable_fragments': True,
-        'http_headers': {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        'extractor_args': {
+            'youtube': {
+                'skip': ['hls', 'dash']
+            }
         },
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'opus',
         }]
     }
-    # クッキーファイルが存在する場合はそれを使用
-    if os.path.exists(COOKIES_FILE):
-        opts['cookiefile'] = COOKIES_FILE
-    # Node.jsのパスを指定（辞書形式）
-    opts['js_runtimes'] = {'node': {}}
-    # リモートEJSコンポーネントを有効化
-    opts['remote_components'] = ['ejs:github']
     return opts
 
 # YouTube URL かどうか判定
