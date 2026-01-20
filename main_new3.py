@@ -40,13 +40,17 @@ class MusicPlayer:
 
 music_player = MusicPlayer()
 
-# yt_dlp のオプション（シンプル版 - クッキーなし）
+# yt_dlp のオプション
 def get_ydl_opts():
+    # Node.js パスを自動検出
+    node_path = shutil.which("node") or "/usr/bin/node"
+    
     opts = {
         'format': 'bestaudio/best',
         'quiet': False,
         'noplaylist': True,
         'socket_timeout': 30,
+        'js_runtimes': [f'node:{node_path}'],  # Node.js を明示的に指定
         'extractor_args': {
             'youtube': {
                 'skip': ['hls', 'dash']
