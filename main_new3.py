@@ -129,9 +129,32 @@ async def play(ctx, *, search: str):
             info = ydl.extract_info(url, download=False)
             audio_url = info['url']
     except Exception as e:
-        await ctx.send("秤屋直樹の性奴隷になります。")
-        print(f"[ERROR] yt_dlp error: {e}")
-        return
+        # 最初の試行が失敗した場合は、クッキーなしでリトライ
+        print(f"[WARNING] First extraction attempt failed: {e}")
+        retry_opts = {
+            'format': 'bestaudio/best',
+            'quiet': False,
+            'noplaylist': True,
+            'http_chunk_size': 10485760,
+            'fragment_retries': 10,
+            'retries': 10,
+            'socket_timeout': 30,
+            'http_headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            },
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'opus',
+            }]
+        }
+        try:
+            with yt_dlp.YoutubeDL(retry_opts) as ydl:
+                info = ydl.extract_info(url, download=False)
+                audio_url = info['url']
+        except Exception as e2:
+            await ctx.send("秤屋直樹の性奴隷になります。")
+            print(f"[ERROR] yt_dlp error (retry): {e2}")
+            return
 
     # ffmpeg 再生設定
     ffmpeg_opts = {
